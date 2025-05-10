@@ -1,0 +1,508 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff99cc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Caixa de Presentes - Dia das Mães</title>
+    <style>
+        :root {
+            --vh: 1vh;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Fallback */
+            min-height: calc(var(--vh, 1vh) * 100);
+            background: linear-gradient(135deg, #ffcce6, #ffb3d9, #ff99cc);
+            color: white;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent; /* Remove highlight ao tocar em elementos no mobile */
+            -webkit-touch-callout: none; /* Impede o menu de contexto em imagens no iOS */
+            touch-action: manipulation; /* Melhora a responsividade do toque */
+        }
+
+        h1, h2, p {
+            color: white;
+        }
+
+        .caixa-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .caixa {
+            width: 220px;
+            height: 220px;
+            background: linear-gradient(145deg, #d44a87, #8e4162);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.6em;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .caixa:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+
+        .caixa:hover {
+            transform: scale(1.1) translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .caixa:active {
+            transform: scale(0.95);
+        }
+
+        .mensagem {
+            display: none;
+            margin: 30px auto;
+            font-size: 1.2em;
+            color: #333;
+            background-color: rgba(255, 204, 255, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            border: 3px solid #fff;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .mensagem p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .mensagem p:first-child {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #d44a87;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .carousel-container {
+    width: 90%;
+    max-width: 1200px;
+    overflow: hidden;
+    position: relative;
+    margin: 30px auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 20px 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.carousel-container::before,
+.carousel-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.carousel-container::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(255, 192, 203, 0.8), transparent);
+}
+
+.carousel-container::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255, 192, 203, 0.8), transparent);
+}
+
+.carousel-track {
+    display: flex;
+    width: max-content;
+    animation: scrollCarousel 40s linear infinite;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.carousel-track:hover {
+    animation-play-state: paused;
+}
+
+.carousel-track img {
+    height: 250px;
+    width: auto;
+    max-width: 400px;
+    flex-shrink: 0;
+    margin: 0 15px;
+    border-radius: 15px;
+    border: 5px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito hover apenas para dispositivos não-touch */
+@media (hover: hover) {
+    .carousel-track img:hover {
+        transform: scale(1.05) translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        position: relative;
+    }
+}
+
+@keyframes scrollCarousel {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-50%));
+    }
+}
+
+/* Animação de entrada do carrossel */
+.carousel-container {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.carousel-container.ativo {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Efeito de pulsação nas bordas */
+@keyframes pulseBorder {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+.carousel-track img:hover {
+    animation: pulseBorder 1.5s infinite;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2rem !important;
+        margin-bottom: 20px !important;
+    }
+
+    .caixa {
+        width: 180px;
+        height: 180px;
+        font-size: 1.3em;
+    }
+
+    .mensagem {
+        width: 95%;
+        padding: 15px;
+        font-size: 1.1em;
+    }
+
+    .mensagem p:first-child {
+        font-size: 1.3em;
+    }
+
+    .carousel-track img {
+        height: 150px;
+        margin: 0 8px;
+        border-width: 3px;
+    }
+
+    .carousel-container {
+        width: 95%;
+        padding: 10px 0;
+        margin-top: 20px;
+    }
+
+    .carousel-container::before,
+    .carousel-container::after {
+        width: 50px;
+    }
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem !important;
+    }
+
+    .caixa {
+        width: 160px;
+        height: 160px;
+        font-size: 1.2em;
+    }
+
+    .mensagem {
+        padding: 12px;
+        font-size: 1em;
+    }
+
+    .carousel-track img {
+        height: 120px;
+        margin: 0 5px;
+    }
+
+    .carousel-container::before,
+    .carousel-container::after {
+        width: 30px;
+    }
+}
+
+/* Ajustes para telas extremamente pequenas */
+@media (max-width: 360px) {
+    h1 {
+        font-size: 1.5rem !important;
+    }
+
+    .caixa {
+        width: 140px;
+        height: 140px;
+        font-size: 1.1em;
+    }
+
+    .mensagem {
+        padding: 10px;
+        font-size: 0.9em;
+        width: 98%;
+    }
+
+    .carousel-track img {
+        height: 100px;
+        margin: 0 3px;
+        border-width: 2px;
+    }
+
+    .carousel-container {
+        padding: 5px 0;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <h1 style="color: #d44a87; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px; text-align: center; font-size: 2.5rem; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">Feliz Dia das Mães! 🌸</h1>
+
+    <div class="caixa-container">
+        <div class="caixa" onclick="abrirCaixa()">🎁 Clique para abrir seu presente especial</div>
+
+        <div class="mensagem" id="mensagem">
+            <p>✨ Feliz Dia das Mães! 🌸💖✨</p>
+            <p>MAMUUUUSKA, feliz dia das mães! Te amo mais que tudo nesse mundo.</p>
+            <p>Obrigado por todo seu amor, carinho e dedicação. Você é incrível!</p>
+            <p>💝 Com todo meu amor 💝</p>
+        </div>
+
+        <div class="carousel-container" id="carousel" style="display: none;">
+    <div class="carousel-track">
+        <!-- Imagens originais -->
+        <img src="{% static 'images/foto.png' %}" alt="foto" class="carousel-img">
+        <img src="{% static 'images/foto1.png' %}" alt="foto1" class="carousel-img">
+        <img src="{% static 'images/foto2.png' %}" alt="foto2" class="carousel-img">
+        <img src="{% static 'images/foto3.png' %}" alt="foto3" class="carousel-img">
+        <img src="{% static 'images/foto4.png' %}" alt="foto4" class="carousel-img">
+        <img src="{% static 'images/foto5.png' %}" alt="foto5" class="carousel-img">
+        <img src="{% static 'images/foto6.png' %}" alt="foto6" class="carousel-img">
+        <img src="{% static 'images/foto7.png' %}" alt="foto7" class="carousel-img">
+        <img src="{% static 'images/foto8.png' %}" alt="foto8" class="carousel-img">
+
+        <!-- Duplicação para loop contínuo -->
+        <img src="{% static 'images/foto.png' %}" alt="foto duplicada" class="carousel-img">
+        <img src="{% static 'images/foto1.png' %}" alt="foto1 duplicada" class="carousel-img">
+        <img src="{% static 'images/foto2.png' %}" alt="foto2 duplicada" class="carousel-img">
+        <img src="{% static 'images/foto3.png' %}" alt="foto3 duplicada" class="carousel-img">
+        <img src="{% static 'images/foto4.png' %}" alt="foto4 duplicada" class="carousel-img">
+        <img src="{% static 'images/foto5.png' %}" alt="foto5 duplicada" class="carousel-img">
+        <img src="{% static 'images/foto6.png' %}" alt="foto6 duplicada" class="carousel-img">
+        <img src="{% static 'images/foto7.png' %}" alt="foto7 duplicada" class="carousel-img">
+        <img src="{% static 'images/foto8.png' %}" alt="foto8 duplicada" class="carousel-img">
+    </div>
+</div>
+    </div>
+
+    <script>
+        function abrirCaixa() {
+            const mensagem = document.getElementById('mensagem');
+            const carouselContainer = document.getElementById('carousel');
+            const caixaElement = document.querySelector('.caixa');
+
+            // Detecta se é um dispositivo móvel
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            // Adiciona feedback tátil em dispositivos que suportam
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            // Exibe a mensagem e o carrossel
+            mensagem.style.display = 'block';
+            carouselContainer.style.display = 'block';
+
+            // Garante que a mensagem esteja centralizada
+            mensagem.style.position = 'relative';
+            mensagem.style.left = '50%';
+            mensagem.style.transform = 'translateX(-50%)';
+
+            // Esconde a caixa com animação
+            caixaElement.style.transform = 'scale(0.8)';
+            caixaElement.style.opacity = '0';
+
+            setTimeout(() => {
+                caixaElement.style.display = 'none';
+
+                // Adiciona uma classe para animar a entrada do carrossel
+                carouselContainer.classList.add('ativo');
+
+                // Garante que o carrossel esteja centralizado
+                carouselContainer.style.position = 'relative';
+                carouselContainer.style.left = '50%';
+                carouselContainer.style.transform = 'translateX(-50%)';
+
+                // Rola suavemente para a mensagem em dispositivos móveis
+                if (isMobile) {
+                    mensagem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 300);
+
+            // Adiciona interatividade nas imagens
+            const imagens = carouselContainer.querySelectorAll('img');
+            imagens.forEach(img => {
+                if (!isMobile) {
+                    // Em desktop, usa eventos de mouse
+                    img.addEventListener('mouseenter', () => {
+                        img.style.zIndex = '10';
+                    });
+
+                    img.addEventListener('mouseleave', () => {
+                        setTimeout(() => {
+                            img.style.zIndex = '';
+                        }, 300);
+                    });
+                } else {
+                    // Em dispositivos móveis, usa eventos de toque
+                    img.addEventListener('touchstart', () => {
+                        img.style.transform = 'scale(1.05) translateY(-10px)';
+                        img.style.zIndex = '10';
+                    });
+
+                    img.addEventListener('touchend', () => {
+                        setTimeout(() => {
+                            img.style.transform = '';
+                            img.style.zIndex = '';
+                        }, 500);
+                    });
+                }
+            });
+        }
+
+        // Inicializa a página e ajusta para dispositivos móveis
+        window.addEventListener('DOMContentLoaded', () => {
+            // Prepara o carrossel para animação suave
+            const carouselTrack = document.querySelector('.carousel-track');
+            if (carouselTrack) {
+                // Garante que o carrossel tenha uma transição suave
+                carouselTrack.style.transition = 'transform 0.5s ease-in-out';
+
+                // Detecta se é um dispositivo móvel
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                if (!isMobile) {
+                    // Em desktops, adiciona evento para pausar a animação no hover
+                    carouselTrack.addEventListener('mouseenter', () => {
+                        carouselTrack.style.animationPlayState = 'paused';
+                    });
+
+                    carouselTrack.addEventListener('mouseleave', () => {
+                        carouselTrack.style.animationPlayState = 'running';
+                    });
+                } else {
+                    // Em dispositivos móveis, ajusta a velocidade da animação
+                    carouselTrack.style.animationDuration = '30s';
+
+                    // Adiciona suporte a toque para pausar o carrossel
+                    carouselTrack.addEventListener('touchstart', () => {
+                        carouselTrack.style.animationPlayState = 'paused';
+                    });
+
+                    carouselTrack.addEventListener('touchend', () => {
+                        // Pequeno atraso para permitir que o usuário veja a imagem
+                        setTimeout(() => {
+                            carouselTrack.style.animationPlayState = 'running';
+                        }, 1000);
+                    });
+                }
+            }
+
+            // Ajusta a altura da página para dispositivos móveis
+            const setViewportHeight = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            };
+
+            // Define a altura inicial e atualiza quando a janela é redimensionada
+            setViewportHeight();
+            window.addEventListener('resize', setViewportHeight);
+        });
+    </script>
+
+</body>
+</html>
