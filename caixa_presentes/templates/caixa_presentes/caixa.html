@@ -376,6 +376,8 @@
         <img src="{% static 'images/foto7.png' %}" alt="foto7 duplicada" class="carousel-img">
         <img src="{% static 'images/foto8.png' %}" alt="foto8 duplicada" class="carousel-img">
     </div>
+    <audio id="musica" src="static/audio/musica.mp3" preload="auto"></audio>
+
 </div>
     </div>
 
@@ -384,6 +386,7 @@
             const mensagem = document.getElementById('mensagem');
             const carouselContainer = document.getElementById('carousel');
             const caixaElement = document.querySelector('.caixa');
+            
 
             // Detecta se é um dispositivo móvel
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -405,6 +408,10 @@
             // Esconde a caixa com animação
             caixaElement.style.transform = 'scale(0.8)';
             caixaElement.style.opacity = '0';
+
+            //toca musica
+            document.getElementById('musica').play();
+
 
             setTimeout(() => {
                 caixaElement.style.display = 'none';
